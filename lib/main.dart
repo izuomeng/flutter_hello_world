@@ -1,56 +1,91 @@
-// Copyright 2018 The Flutter team. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: RandomWords(),
-    );
-  }
-}
-
-class RandomWords extends StatefulWidget {
-  @override
-  _RandomWordsState createState() => _RandomWordsState();
-}
-
-class _RandomWordsState extends State<RandomWords> {
-  final _suggestions = <WordPair>[];
-  final _biggerFont = TextStyle(fontSize: 18.0);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('名称列表'),
+    Widget titleSection = Container(
+      padding: EdgeInsets.all(32),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(bottom: 12),
+                  child: Text(
+                    'Oeschinen Lake Campground',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Text(
+                  'Kandersteg, Switzerland',
+                )
+              ],
+              crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+          ),
+          Icon(
+            Icons.star,
+            color: Colors.green,
+          ),
+          Text('41')
+        ],
       ),
-      body: _buildSuggestions(),
+    );
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('布局demo'),
+        ),
+        body: ListView(
+          children: [
+            Image.asset(
+              'images/lake.jpg',
+              height: 200,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              alignment: Alignment.bottomCenter,
+            ),
+            titleSection,
+            renderButtonSection()
+          ],
+        ),
+      ),
+      theme: ThemeData(primaryColor: Colors.green),
     );
   }
 
-  Widget _buildSuggestions() => ListView.builder(
-      itemBuilder: (context, i) {
-        if (i.isOdd) return Divider();
-
-        final index = i ~/ 2;
-        if (i >= _suggestions.length) {
-          _suggestions.addAll(generateWordPairs().take(10));
-        }
-        return _buildRow(_suggestions[index]);
-      },
-      padding: EdgeInsets.all(16));
-
-  Widget _buildRow(WordPair word) => ListTile(
-        title: Text(
-          word.asPascalCase,
-          style: _biggerFont,
+  Widget renderButtonSection() {
+    List<Widget> renderSectionItem(
+        {String iconName, String text, IconData icon}) {
+      return [
+        IconButton(
+          icon: Icon(icon),
+          onPressed: () {
+            print("You click $iconName");
+          },
         ),
-      );
+        Text(text)
+      ];
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        Column(
+            children: renderSectionItem(
+                iconName: 'call', text: 'CALL', icon: Icons.call)),
+        Column(
+          children: renderSectionItem(
+              iconName: 'route', text: 'ROUTE', icon: Icons.navigation),
+        ),
+        Column(
+            children: renderSectionItem(
+                iconName: 'share', text: 'SHARE', icon: Icons.share)),
+      ],
+    );
+  }
 }
